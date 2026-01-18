@@ -32,8 +32,7 @@ fi
 
 # 2. Push to Satellite
 echo -e "${BLUE}Pushing local state to $DEVICE_BRANCH...${NC}"
-# git push origin "$DEVICE_BRANCH"
-echo 'git push origin "$DEVICE_BRANCH"'
+git push origin "$DEVICE_BRANCH"
 
 # 3. Fetch Main
 echo -e "${BLUE}Fetching Main...${NC}"
@@ -74,6 +73,9 @@ if ! git merge --no-commit --no-ff origin/main > /dev/null 2>&1; then
     
     echo -e "${RED}Overwriting local conflicts with Main...${NC}"
     sleep 2
+else
+    # If git merge --no-commit --no-ff origin/main does not fail, i.e., there is not conflict, we need to abort the merge.
+    git merge --abort
 fi
 
 # 5. Execute Merge
