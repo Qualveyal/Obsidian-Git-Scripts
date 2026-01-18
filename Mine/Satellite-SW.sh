@@ -74,6 +74,9 @@ if ! git merge --no-commit --no-ff origin/main > /dev/null 2>&1; then
     
     echo -e "${RED}Overwriting local conflicts with Main...${NC}"
     sleep 2
+else
+    # If git merge --no-commit --no-ff origin/main does not fail, i.e., there is not conflict, we need to abort the merge.
+    git merge --abort
 fi
 
 # 5. Execute Merge
