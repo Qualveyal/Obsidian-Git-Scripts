@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # === CONFIGURATION ===
-VAULT_PATH="/home/user/Documents/ObsidianVault"
-MY_LOCAL_BRANCH="pc1-satellite"
-SATELLITES=("pc1-satellite" "pc2-satellite")
+VAULT_PATH="/home/qual/Code/Vault-Test-Git"
+MY_LOCAL_BRANCH="sat-1"
+SATELLITES=("sat-1" "sat-2")
 # Specific files to auto-resolve in favor of Main (Space separated)
-IGNORE_FILES=".obsidian/workspace.json .obsidian/appearance.json"
+IGNORE_FILES=".obsidian/workspace.json"
 
 # Colors
 RED='\033[0;31m'
