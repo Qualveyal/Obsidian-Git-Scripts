@@ -2,7 +2,7 @@
 
 # === CONFIGURATIONS ===
 VAULT_PATH="/home/qual/Code/Vault-Test-Git"
-DEVICE_BRANCH="sat-1"
+DEVICE_BRANCH="sat-2"
 # Specific files to auto-resolve in favor of Main (Space separated)
 RECOVERY_LOG="${DEVICE_BRANCH}_Recovery_Log.md"
 
@@ -20,17 +20,14 @@ cd "$VAULT_PATH" || { echo -e "${RED}Vault path not found!${NC}"; exit 1; }
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 if [ "$CURRENT_BRANCH" != "$DEVICE_BRANCH" ]; then
     echo -e "${YELLOW}Switching to branch $DEVICE_BRANCH...${NC}"
-    # git checkout "$DEVICE_BRANCH" || { echo -e "${DEVICE_BRANCH} does not exits"; exit 1; }
-    echo "git checkout "$DEVICE_BRANCH" || { echo -e "${DEVICE_BRANCH} does not exits"; exit 1; }"
+    git checkout "$DEVICE_BRANCH" || { echo -e "${DEVICE_BRANCH} does not exits"; exit 1; }
 fi
 
 # 1. Commit local work
 if [[ -n $(git status -s) ]]; then
     echo -e "${YELLOW}Committing local changes...${NC}"
-    # git add .
-    # git commit -m "$DEVICE_BRANCH: Manual Sync $(date "+%Y-%m-%d %H:%M")
-    echo "git add ."
-    echo 'git commit -m "$DEVICE_BRANCH: Manual Sync $(date "+%Y-%m-%d %H:%M")'
+    git add .
+    git commit -m "$DEVICE_BRANCH: Manual Sync $(date "+%Y-%m-%d %H:%M")"
 fi
 
 # 2. Push to Satellite
@@ -68,12 +65,12 @@ if ! git merge --no-commit --no-ff origin/main > /dev/null 2>&1; then
     for file in $CONFLICT_FILES; do
         echo "- [[$file]]" >> "$RECOVERY_LOG"
     done
-    echo "**Recovery Hash**: \`$SAFE_HASH\` in \`$MY_BRANCH\`" >> "$RECOVERY_LOG"
+    echo "**Recovery Hash**: \`$SAFE_HASH\` in \`$DEVICE_BRANCH\`" >> "$RECOVERY_LOG"
     echo "---" >> "$RECOVERY_LOG"
     
     # Commit the log so it survives the overwrite
     git add "$RECOVERY_LOG"
-    git commit -m "$MY_BRANCH: Logged recovery receipt"
+    git commit -m "$DEVICE_BRANCH: Logged recovery receipt"
     
     echo -e "${RED}Overwriting local conflicts with Main...${NC}"
     sleep 2
@@ -93,8 +90,8 @@ else
 fi
 
 # 6. Push Final Result to Satellite
-echo -e "${BLUE}Pushing final state to $MY_BRANCH...${NC}"
-git push origin "$MY_BRANCH"
+echo -e "${BLUE}Pushing final state to $DEVICE_BRANCH...${NC}"
+git push origin "$DEVICE_BRANCH"
 
 echo -e "${GREEN}✅ Daily Sync Complete.${NC}"
 
