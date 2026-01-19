@@ -51,19 +51,16 @@ git fetch origin main
 # Capture current hash (For logging purposes)
 LOG_HASH=$(git rev-parse HEAD)
 
-# 4. Attempt Merge of Main in DEVICE_BRANCH Satellite
+# 4. Attempt Merge of Main into DEVICE_BRANCH Satellite
 # We check if Main has updates that conflict with DEVICE_BRANCH Satellite
 CONFLICT_DETECTED=0
 
-if ! git merge --no-commit --no-ff origin/main > /dev/null 2>&1; then
+if ! git merge-tree --write-tree "$DEVICE_BRANCH" main > /dev/null 2>&1; then
     CONFLICT_DETECTED=1
     echo -e "${RED}CONFLICT DETECTED - Main has authoritative updates!${NC}"
     
     # Get list of conflicting files
     CONFLICT_FILES=$(git diff --name-only --diff-filter=U)
-    
-    # Abort the dry run
-    git merge --abort
     
     # --- WRITE RECEIPT LOG ---
     echo -e "${YELLOW}Logging recovery details to $RECOVERY_LOG...${NC}"
