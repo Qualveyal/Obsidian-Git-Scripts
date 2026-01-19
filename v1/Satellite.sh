@@ -60,6 +60,8 @@ if [[ $CONFLICT_DETECTED == 0 ]]; then
     # No conflict
     git merge origin/main --no-edit -m "Sync from Main"
     echo -e "${GREEN}Merge Clean (or Fast-Forward).${NC}"
+else
+    # There is a conflict
 fi
 
 
