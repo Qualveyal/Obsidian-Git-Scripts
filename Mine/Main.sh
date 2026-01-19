@@ -43,7 +43,7 @@ for branch in "${SATELLITES[@]}"; do
         continue
     fi
     
-    echo -e "${YELLOW}  Merging changes from $branch...${NC}"
+    echo -e "${YELLOW}Merging changes from $branch...${NC}"
     
     # Attempt Merge
     if git merge "origin/$branch" --no-edit > /dev/null 2>&1; then
