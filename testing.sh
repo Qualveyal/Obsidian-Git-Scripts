@@ -11,5 +11,11 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-echo -e "${BLUE}=== Starting Master Sync (PC1) ===${NC}"
-echo -e "Again"
+uname -n
+VEF=$(uname -n)
+
+if [[ $VEF == *"Snow-White"* ]]; then 
+    echo "OK"
+fi
+# elif [[ $(uname -n) == "SNOW-WHITE"* ]]; then
+#     echo "No"
