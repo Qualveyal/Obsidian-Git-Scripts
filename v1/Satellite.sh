@@ -53,15 +53,19 @@ LOG_HASH=$(git rev-parse HEAD)
 
 # 4. Attempt Merge of Main into DEVICE_BRANCH Satellite
 # We check if Main has updates that conflict with DEVICE_BRANCH Satellite
-MERGE_TREE_OUTPUT=$(git merge-tree --write-tree "$DEVICE_BRANCH" main 2>&1)
+echo -e "${BLUE}Attepting merge-tree...${NC}"
+MERGE_OUTPUT=$(git merge-tree --write-tree "$DEVICE_BRANCH" main 2>&1)
 CONFLICT_DETECTED=$? # The exit code for the last command.
 
 if [[ $CONFLICT_DETECTED == 0 ]]; then
-    # No conflict
+    # No conflict, merge main into local Satellite branch.
+    echo -e "${BLUE}CONFLICT FREE - Merging clean or with Fast-Forward...${NC}"
     git merge origin/main --no-edit -m "Sync from Main"
-    echo -e "${GREEN}Merge Clean (or Fast-Forward).${NC}"
+    echo -e "${GREEN}MERGE COMPLETE - Merge main into local $DEVICE_BRANCH branch.${NC}"
 else
-    # There is a conflict
+    # There is a conflict, main branch's version overwrites the conflicts
+    echo -e "${RED}CONFLICT DETECTED - Main has authoritative updates.${NC}"
+
 fi
 
 
