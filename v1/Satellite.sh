@@ -56,7 +56,7 @@ LOG_HASH=$(git rev-parse HEAD)
 CONFLICT_DETECTED=0
 
 
-
+if git merge --no-commit --no-ff origin/main; then echo "OK"; else echo "Not OK"; fi
 
 if ! git merge --no-commit --no-ff origin/main > /dev/null 2>&1; then
     CONFLICT_DETECTED=1
