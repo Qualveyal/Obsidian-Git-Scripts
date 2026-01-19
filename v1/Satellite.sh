@@ -90,7 +90,7 @@ elif [[ $CONFLICT_DETECTED == 1 ]]; then
     # 5.2.2 Commit the log file
     echo -e "${BLUE}Comitting log to $DEVICE_BRANCH...${NC}"
     git add "$LOG_FILE"
-    git commit -m "$DEVICE_BRANCH: Updated Log with conflict overwrites"
+    git commit -m "$DEVICE_BRANCH: Updated Log with conflict overwrites."
 else
     echo -e "${RED}ERROR - Merge failed unexpectedly.${NC}"
     exit 1
