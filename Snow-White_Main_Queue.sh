@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash g
 
 # Configuration
 VAULT_PATH="/home/qual/Code/Vault-Test-Git/"
