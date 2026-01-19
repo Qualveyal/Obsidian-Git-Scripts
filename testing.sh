@@ -1,5 +1,5 @@
 #!/bin/bash
-
+SAT_1="sat-1"; SAT_2="sat-2"
 VAULT_PATH="/home/qual/Code/Vault-Test-Git/"
 LOG_FILE="./LOG.log"
 DATE=$(date "+%Y-%m-%d %H:%M:%S")
@@ -11,11 +11,15 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-uname -n
-VEF=$(uname -n)
+get_branch_name () {
+    if [[ $(uname -n) == "Snow-White"* ]]; then
+        echo "${SAT_1}"
+    elif [[ $(uname -n) == "Astral-Canvas"* ]]; then
+        echo "${SAT_2}"
+    else
+        echo "E"
+    fi
+}
 
-if [[ $VEF == *"Snow-White"* ]]; then 
-    echo "OK"
-fi
-# elif [[ $(uname -n) == "SNOW-WHITE"* ]]; then
-#     echo "No"
+result="$(get_branch_name)"
+echo $result
