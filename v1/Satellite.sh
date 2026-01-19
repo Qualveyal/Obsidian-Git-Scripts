@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # Configurations
-SAT_1="sat-1"; SAT_2="sat-2";
+SATELLITES=("sat-1" "sat-2")
 get_branch_name () {
     if [[ $(uname -n) == "Snow-White"* ]]; then
-        echo "${SAT_1}"
+        echo "${SATELLITES[0]}"
     elif [[ $(uname -n) == "Astral-Canvas"* ]]; then
-        echo "${SAT_2}"
+        echo "${SATELLITES[1]}"
     else
         echo "E"
     fi
@@ -27,7 +27,7 @@ YELLOW='\033[1;33m'
 NC='\033[0m'
 
 # Start message
-echo -e "${BLUE}=== Satellite Sync - ${DEVICE_BRANCH} ===${NC}"
+echo -e "${MAGENTA}=== Satellite Sync - ${DEVICE_BRANCH} ===${NC}"
 cd "$VAULT_PATH" || { echo -e "${RED}Vault path not found.${NC}"; exit 1; }
 
 # 0 Ensure we are in the correct Satellite branch
@@ -57,20 +57,20 @@ LOG_HASH=$(git rev-parse HEAD)
 
 # 4 Dry runing the merge of Main into local Satellite
 # We check if Main has updates that conflict with local Satellite
-echo -e "${YELLOW}Attepting merge-tree...${NC}"
+echo -e "${BLUE}Attepting merge-tree...${NC}"
 MERGE_OUTPUT=$(git merge-tree --write-tree "$DEVICE_BRANCH" main 2>&1)
 CONFLICT_DETECTED=$? # The exit code for the last command.
 
 # 5 Doing the merge of Main into local Satellite
 if [[ $CONFLICT_DETECTED == 0 ]]; then
-    # 5.1. Doing the merge of Main into local Satellite with no conflict
-    echo -e "${BLUE}CONFLICT FREE - Merging clean or with Fast-Forward...${NC}"
+    # 5.1 Doing the merge of Main into local Satellite with no conflict
+    echo -e "${YELLOW}CONFLICT FREE - Merging clean or with Fast-Forward...${NC}"
     git merge origin/main --no-edit -m "Sync from Main - No conflict"
     echo -e "${GREEN}MERGE COMPLETE - Merge main into local $DEVICE_BRANCH branch.${NC}"
 elif [[ $CONFLICT_DETECTED == 1 ]]; then
     # 5.2 Doing the merge of Main into local Satellite with conflict
     # main branch's version overwrites the conflicts
-    echo -e "${YELLOW}CONFLICT DETECTED - Main overwrites $DEVICE_BRANCH.${NC}"
+    echo -e "${RED}CONFLICT DETECTED - Main overwrites $DEVICE_BRANCH.${NC}"
     CONFLICT_FILES=$(echo "$MERGE_OUTPUT" | grep "^CONFLICT" | sed 's/CONFLICT.*in //' | sed 's/.*/- [[&]]/')
 
     git merge origin/main -X theirs -m "Sync from Main - conflict logged"
@@ -88,8 +88,9 @@ elif [[ $CONFLICT_DETECTED == 1 ]]; then
     echo "---" >> "$LOG_FILE"
 
     # 5.2.2 Commit the log file
+    echo -e "${BLUE}Comitting log to $DEVICE_BRANCH...${NC}"
     git add "$LOG_FILE"
-    git commit -m "$DEVICE_BRANCH: Updated Log with conflict overwrites"
+    git commit -m "$DEVICE_BRANCH: Updated Log with conflict overwrites."
 else
     echo -e "${RED}ERROR - Merge failed unexpectedly.${NC}"
     exit 1
