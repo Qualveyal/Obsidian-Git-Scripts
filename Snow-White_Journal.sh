@@ -4,7 +4,7 @@
 VAULT_PATH="/home/qual/Code/Vault-Test-Git/"
 LOG_FILE="/tmp/obsidian_sync_pc1.log"
 JOURNAL_FILE="Conflict_Journal.md"
-DATE=$(date "+%Y-%m-%d %H:%M:%S")s
+DATE=$(date "+%Y-%m-%d %H:%M:%S")
 SW_BRANCH="main"
 AC_BRANCH="pc2-satellite"
 
