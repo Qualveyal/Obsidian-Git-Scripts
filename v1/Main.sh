@@ -15,7 +15,7 @@ DEVICE_BRANCH="$(get_branch_name)"
 VAULT_PATH="/home/qual/Code/Vault-Test-Git"
 # Specific files to auto-resolve in favor of main (Space separated).
 # IGNORE_FILES=(".obsidian/workspace.json" "B.md" "C.md")
-IGNORE_FILES=(".obsidian/workspace.json" "TEST.md")
+IGNORE_FILES=(".obsidian/workspace.json")
 LOG_FILE="LOG - Main.md"
 
 # The "switch back to Device Satellite" function.
@@ -114,20 +114,26 @@ for branch in "${SATELLITES[@]}"; do
 
         # If the conflict is with an ignored file, then ignore it and take the main-temp version of it.
         RESOLVED_SOMETHING=0
-        for file in "{$IGNORE_FILES[@]}"; do
+        for file in "${IGNORE_FILES[@]}"; do
             if [[ "$CONFLICT_FILES" == *"$file"* ]]; then
                 git restore --source=main-temp --staged --worktree "$file"
                 RESOLVED_SOMETHING=1
             fi
         done
         # We actually resolved an ignored file.
-        if [[ RESOLVED_SOMETHING == 1 ]]; then
+        if [[ $RESOLVED_SOMETHING == 1 ]]; then
             echo -e "${YELLOW}Auto-resolved conflict for Ignored Files (Keeping main-temp version).${NC}"
         fi
 
         # Check if any Real Conflicts remain
         CONFLICT_FILES=$(git diff --name-only --diff-filter=U)
-        mapfile -t CONFLICT_LIST <<< "$CONFLICT_FILES"
+        # Make a list, empty string give a zero element list
+        if [[ -z "$CONFLICT_FILES" ]]; then
+            CONFLICT_LIST=()
+        else
+            mapfile -t CONFLICT_LIST <<< "$CONFLICT_FILES"
+        fi
+
         # echo -e "---------------------------------"
         # echo "$CONFLICT_FILES"
         # echo -e "---------------------------------"
@@ -184,33 +190,34 @@ for branch in "${SATELLITES[@]}"; do
                 git commit -m "Merged $branch (Auto-resolved conflicts, using main version)"
                 echo -e "${GREEN}MERGE COMPLETE - Conflict resolved automatically, using main-temp's version.${NC}"
 
-                # Write to the log file.
+                # Prepare for the log file.
                 echo -e "${BLUE}Creating log...${NC}"
                 COMMIT_HASH=$(git rev-parse HEAD)
 
+                ##########
+                # Write to the log file
                 echo "# $(date "+%Y-%m-%d")" >> "$LOG_FILE"
                 echo "Merge: $branch → **main**" >> "$LOG_FILE"
                 echo "Conflict Resolution: **main** overruled **$branch**" >> "$LOG_FILE"
-                echo "**main** Commit Hash: `$COMMIT_HASH`" >> "$LOG_FILE"
-                echo "$CONFLICT_FILES" >> "$LOG_FILE"
+                echo "**main** Commit Hash: \`$COMMIT_HASH\`" >> "$LOG_FILE"
+
+                # Loop through the list of conflicted files and make a formatted string
+                # for this use casw.
+                for file in "${CONFLICT_LIST[@]}"; do
+                    LOGGED_FILES="- $file"
+                done
+                echo "$LOGGED_FILES" >> "$LOG_FILE"
+
+                echo "" >> "$LOG_FILE"
                 echo "---" >> "$LOG_FILE"
+                ##########
 
                 # Commit the log file
-                echo -e "${BLUE}Comitting log to $branch...${NC}"
+                echo -e "${BLUE}Comitting log to main...${NC}"
                 git add "$LOG_FILE"
                 git commit -m "$branch: Updated Log with conflict overwrites."
                 echo -e "${GREEN}LOG COMMIT COMPLETE - Logs for $branch has been committed into main-temp${NC}"
                 ;;
-
-            # Abort
-            # "3")
-            #     echo -e "${YELLOW}You have chosen Merge Strategy 3${NC}"
-            #     echo -ne "${MAGENTA}There are real conflicts. Press Enter to exit Main Sync...${NC}"
-            #     read -rsn1; echo "";
-            #     echo -e "${YELLOW}There are real conflicts. Exiting Main Sync...${NC}"
-            #     finishing-merge
-            #     exit 1
-            #     ;;
             esac
         fi
     fi
@@ -222,18 +229,14 @@ echo -e "---------------------------------"
 if [[ $ABORT == 1 ]]; then
     echo -e "${YELLOW}You have chosen Merge Strategy 3 - Abort${NC}"
 
-    # You have seen how the merge goes with main-temp
-    # This prompt is to continue with the Sync and merge main-temp into main
-    # This essentially make the Sync with Choice 2, auto0merge
-    PROMPT="N"
-    read -p "Do you wish to do an Auto-Merge (2) and cancel the Abort? (y/N): " PROMPT
-
-    if [[ $PROMPT == "y" ]]; then 
+    # these are two functions so that it is easier to edit default Prompt of y and n.
+    cancel_abort() {
         # Cancel Abort
         echo -e "---------------------------------"
         echo -e "${YELLOW}You have chosen to cancel the Abort${NC}"
         echo -e "${YELLOW}Main Sync will continue as Auto-Merge (2)${NC}"
-    else
+    }
+    do_abort() {
         # Abort
         echo -e "${YELLOW}Aborting Main Sync...${NC}"
         finishing-merge
@@ -241,6 +244,18 @@ if [[ $ABORT == 1 ]]; then
         # -r:raw | -s:silent, hide user input | -p: prompt | -n1:stop after 1 character
         read -rsn1; echo "";
         exit 1
+    }
+
+    # You have seen how the merge goes with main-temp
+    # This prompt is to continue with the Sync and merge main-temp into main
+    # This essentially make the Sync with Choice 2, auto0merge
+    PROMPT="Y"
+    read -p "Do you wish to cancel the Abort and do an Auto-Merge (2)? (Y/n): " PROMPT
+
+    if [[ $PROMPT == "n" ]]; then 
+        do_abort
+    else
+        cancel_abort
     fi
 
 fi

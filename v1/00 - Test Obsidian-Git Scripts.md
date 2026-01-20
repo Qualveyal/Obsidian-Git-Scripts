@@ -105,18 +105,18 @@ No need to try "Sat-1 No edit Satellite Sync" and "Sat-2 No edit Satellite Sync"
     C3: OK
 
 9. Sat-1 edit, Sat-2 edit, with conflict ==> Sat-1 sync + Sat-2 sync ==> Main Sync ?
-    C1:
-    C2:
-    C3:
+    C1: OK 
+    C2: OK
+    C3: OK
 
 ##
 10. Sat-1 edit, Sat-2 edit, no conflict ==> Sat-1 sync + Sat-2 NO sync ==> Main Sync ?
-    C1:
-    C2:
-    C3:
+    C1: OK
+    C2: OK
+    C3: OK
 
-11. Sat-1 edit, Sat-2 edit, with conflict ==> Sat-1 sync + Sat-2 NO sync ==> Main Sync ?
-    C1:
-    C2:
-    C3:
+11. Sat-1 edit, Sat-2 edit, with conflict ==> Sat-1 sync + Sat-2 NO sync, more commits ==> Main Sync ?
+    C1: OK
+    C2: OK
+    C3: OK
     
