@@ -21,7 +21,7 @@ BLUE='\033[0;34m'
 GREEN='\033[0;32m'
 CYAN='\033[0;36m'
 RED='\033[0;31m'
-MAGENTA='\033[0;35m'
+MAGENTA='\033[4;35m'
 WHITE='\033[0;37m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
@@ -64,7 +64,7 @@ CONFLICT_DETECTED=$? # The exit code for the last command.
 # 5 Doing the merge of Main into local Satellite
 if [[ $CONFLICT_DETECTED == 0 ]]; then
     # 5.1 Doing the merge of Main into local Satellite with no conflict
-    echo -e "${YELLOW}CONFLICT FREE - Merging clean or with Fast-Forward...${NC}"
+    echo -e "${YELLOW}CONFLICT FREE - No Merge or Merging clean or with Fast-Forward...${NC}"
     git merge origin/main --no-edit -m "Sync from Main - No conflict"
     echo -e "${GREEN}MERGE COMPLETE - Merge main into local $DEVICE_BRANCH branch.${NC}"
 elif [[ $CONFLICT_DETECTED == 1 ]]; then
@@ -101,6 +101,7 @@ echo -e "${BLUE}Pushing final state to $DEVICE_BRANCH...${NC}"
 git push origin "$DEVICE_BRANCH"
 
 echo -e "${GREEN}Satellite Sync Complete.${NC}"
+echo -ne "${MAGENTA}=== Press any key to finish. ===${NC}"
 # -r:raw | -s:silent, hide user input | -p: prompt | -n1:stop after 1 character
-read -rsp "${MAGENTA}Press any key to finish.${NC}" -n1; echo "";
+read -rsn1; echo "";
 

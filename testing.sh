@@ -4,22 +4,25 @@ VAULT_PATH="/home/qual/Code/Vault-Test-Git/"
 LOG_FILE="./LOG.log"
 DATE=$(date "+%Y-%m-%d %H:%M:%S")
 
-# Colors for Terminal
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
+# Colors
+BLACK='\033[0;30m'
 BLUE='\033[0;34m'
-NC='\033[0m' # No Color
+GREEN='\033[0;32m'
+CYAN='\033[0;36m'
+RED='\033[0;31m'
+MAGENTA='\033[0;35m'
+WHITE='\033[0;37m'
+YELLOW='\033[1;33m'
+NC='\033[0m'
 
-get_branch_name () {
-    if [[ $(uname -n) == "Snow-White"* ]]; then
-        echo "${SAT_1}"
-    elif [[ $(uname -n) == "Astral-Canvas"* ]]; then
-        echo "${SAT_2}"
-    else
-        echo "E"
-    fi
-}
-
-result="$(get_branch_name)"
-echo $result
+echo -e "${BLACK}=== Press any key to finish. ===${NC}"
+echo -e "${BLUE}=== Press any key to finish. ===${NC}"
+echo -e "${GREEN}=== Press any key to finish. ===${NC}"
+echo -e "${CYAN}=== Press any key to finish. ===${NC}"
+echo -e "${RED}=== Press any key to finish. ===${NC}"
+echo -e "${MAGENTA}=== Press any key to finish. ===${NC}"
+echo -e "${WHITE}=== Press any key to finish. ===${NC}"
+echo -e "${YELLOW}=== Press any key to finish. ===${NC}"
+echo -e "${NC}=== Press any key to finish. ===${NC}"
+# -r:raw | -s:silent, hide user input | -p: prompt | -n1:stop after 1 character
+read -rsn1; echo "";
