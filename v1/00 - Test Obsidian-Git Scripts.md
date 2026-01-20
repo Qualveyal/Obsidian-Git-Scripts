@@ -91,16 +91,18 @@ bash "${SCRIPT_LOCATION}/Satellite.sh"
 
 7. Sat-2 edit, Sat-1 no edit ==> Sat-2 Satellite Sync ?
     +Main:
-        C1:
-        C2:
-        C3:
+        C1: OK
+        C2: OK
+        C3: OK
+Assuming this works as it is the same as number 6.
+
 No need to try "Sat-1 No edit Satellite Sync" and "Sat-2 No edit Satellite Sync"
 
 ##
 8. Sat-1 edit, Sat-2 edit, no conflict ==> Sat-1 sync + Sat-2 sync ==> Main Sync ?
-    C1:
-    C2:
-    C3:
+    C1: OK
+    C2: OK
+    C3: OK
 
 9. Sat-1 edit, Sat-2 edit, with conflict ==> Sat-1 sync + Sat-2 sync ==> Main Sync ?
     C1:

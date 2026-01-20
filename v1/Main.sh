@@ -20,6 +20,7 @@ LOG_FILE="LOG - Main.md"
 
 # The "switch back to Device Satellite" function.
 finishing-merge () {
+    git switch -C main-temp main
     git switch $DEVICE_BRANCH
     git branch -D main-temp
 }
@@ -57,7 +58,8 @@ git pull origin main
 # 4 Dry run merge the Satellites into main.
 # We use a main-temp branch, started from main.
 echo -e "${BLUE}Creating and Switching to main-temp...${NC}"
-git switch -c main-temp main
+git switch -C main-temp main
+
 
 # Ask how to deal with conflicts
 while true; do
@@ -65,7 +67,7 @@ while true; do
     echo -e "${CYAN}Select Merge Strategy:${NC}"
     echo "1) Manual Merge"
     echo "2) Auto-Merge (Prefer main-temp, and log overrides to $LOG_FILE)"
-    echo "3) Abort Merge (Restore state)"
+    echo -e "3) Abort Merge (Restore state) - ${CYAN}DEFAULT${NC}"
     echo -e "${CYAN}==========${NC}"
     read -p "Enter choice [1-3]: " CHOICE
 
@@ -75,8 +77,9 @@ while true; do
             break
             ;;
         *)
-            # Invalid input. The loop will repeat.
-            echo -e "${RED}ERROR - '$CHOICE' is not a valid option. Please enter 1, 2, or 3.${NC}"
+            # Invalid input. Set to 3 for Abort
+            CHOICE="3"
+            break
             ;;
     esac
 done
@@ -92,7 +95,7 @@ for branch in "${SATELLITES[@]}"; do
     echo -e "${BLUE}Merging $branch into main-temp...${NC}"
 
     # Test with merge-tree
-    MERGE_OUTPUT=$(git merge-tree --write-tree main-temp "$branch" 2>&1)
+    MERGE_OUTPUT=$(git merge-tree --write-tree main-temp origin/"$branch" 2>&1)
     CONFLICT_DETECTED=$? # The exit code for the last command.
     
 
@@ -124,6 +127,10 @@ for branch in "${SATELLITES[@]}"; do
 
         # Check if any Real Conflicts remain
         CONFLICT_FILES=$(git diff --name-only --diff-filter=U)
+        echo -e "---------------------------------"
+        echo "$CONFLICT_FILES"
+        echo -e "---------------------------------"
+
 
         if [[ -z "$CONFLICTS" ]]; then
             # We fixed everything, commit and move on
@@ -212,13 +219,12 @@ echo -e "---------------------------------"
 
 if [[ $ABORT == 1 ]]; then
     echo -e "${YELLOW}You have chosen Merge Strategy 3 - Abort${NC}"
-    echo -e "${YELLOW}Aborting Main Sync...${NC}"
 
     # You have seen how the merge goes with main-temp
     # This prompt is to continue with the Sync and merge main-temp into main
     # This essentially make the Sync with Choice 2, auto0merge
     PROMPT="N"
-    read -p "Do you wish to do an Auto-Merge (2) and cancel the Abort? (y/N)" PROMPT
+    read -p "Do you wish to do an Auto-Merge (2) and cancel the Abort? (y/N): " PROMPT
 
     if [[ $PROMPT == "y" ]]; then 
         # Cancel Abort
@@ -227,6 +233,7 @@ if [[ $ABORT == 1 ]]; then
         echo -e "${YELLOW}Main Sync will continue as Auto-Merge (2)${NC}"
     else
         # Abort
+        echo -e "${YELLOW}Aborting Main Sync...${NC}"
         finishing-merge
         echo -ne "${MAGENTA}=== Press any key to finish. ===${NC}"
         # -r:raw | -s:silent, hide user input | -p: prompt | -n1:stop after 1 character
