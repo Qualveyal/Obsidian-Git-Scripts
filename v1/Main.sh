@@ -82,7 +82,7 @@ while true; do
 done
 echo -e "${CYAN}==========${NC}"
 
-# Loop throught all the Satellites, starting from 1 to n.
+# Loop through all the Satellites, starting from 1 to n.
 for branch in "${SATELLITES[@]}"; do
     echo -e "---------------------------------"
     echo -e "${BLUE}Merge $branch into Main-Temp${NC}"
@@ -137,6 +137,7 @@ for branch in "${SATELLITES[@]}"; do
                 echo -e "${YELLOW}==========${NC}"
                 echo -e "${CONFLICTS}"
                 echo -e "${YELLOW}==========${NC}"
+                code $VAULT_PATH
 
                 read -p "Press Enter when resolved..."
 
