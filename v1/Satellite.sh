@@ -45,10 +45,12 @@ if [[ -n $(git status -s) ]]; then
 fi
 
 # 2 Push to Satellite
+echo -e "---------------------------------"
 echo -e "${BLUE}Pushing local state to $DEVICE_BRANCH...${NC}"
 git push origin "$DEVICE_BRANCH"
 
 # 3 Fetch Main
+echo -e "---------------------------------"
 echo -e "${BLUE}Fetching Main...${NC}"
 git fetch origin main
 
@@ -97,6 +99,7 @@ else
 fi
 
 # 6 Push final result to Satellite.
+echo -e "---------------------------------"
 echo -e "${BLUE}Pushing final state to $DEVICE_BRANCH...${NC}"
 git push origin "$DEVICE_BRANCH"
 
