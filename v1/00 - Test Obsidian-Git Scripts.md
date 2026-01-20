@@ -71,3 +71,13 @@ bash "${SCRIPT_LOCATION}/Main.sh"
 bash "${SCRIPT_LOCATION}/Satellite.sh"
 
 ```
+
+---
+
+# LOG
+1. All equal, Sat-1 Satellite Sync Works!
+2. All equal, Sat-2 Satellite Sync Works!
+
+3. All equal, Main Sync, 1, Works!
+
+3. Sat-1 edit, Sat-2 no edit ==>

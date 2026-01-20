@@ -30,7 +30,7 @@ BLUE='\033[0;34m'
 GREEN='\033[0;32m'
 CYAN='\033[0;36m'
 RED='\033[0;31m'
-MAGENTA='\033[0;35m'
+MAGENTA='\033[4;35m'
 WHITE='\033[0;37m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
@@ -209,4 +209,7 @@ git switch $DEVICE_BRANCH
 git merge main -m "Merge main into $DEVICE_BRANCH after a successful Main Sync."
 
 echo -e "${GREEN}Main Sync Complete.${NC}"
-read -rsp "${MAGENTA}Press any key to finish.${NC}" -n1; echo "";
+
+echo -ne "${MAGENTA}=== Press any key to finish. ===${NC}"
+# -r:raw | -s:silent, hide user input | -p: prompt | -n1:stop after 1 character
+read -rsn1; echo "";
