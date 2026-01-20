@@ -83,11 +83,11 @@ bash "${SCRIPT_LOCATION}/Satellite.sh"
 5. All equal, Main Sync C3 Works!
 
 ---
-6. Sat-1 edit, Sat-2 no edit ==> Sat-1 Satellite Sync ?
+6. Sat-1 edit, Sat-2 no edit ==> Sat-1 Satellite Sync ? works
     +Main:
-        C1:
-        C2:
-        C3:
+        C1: NO conflict, works.
+        C2: NO conflict, works.
+        C3: NO conflict, works.
 
 7. Sat-2 edit, Sat-1 no edit ==> Sat-2 Satellite Sync ?
     +Main:

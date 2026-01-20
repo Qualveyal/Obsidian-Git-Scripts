@@ -106,9 +106,6 @@ for branch in "${SATELLITES[@]}"; do
         # There is a conflict.
         CONFLICT_FILES=$(echo "$MERGE_OUTPUT" | grep "^CONFLICT" | sed 's/CONFLICT.*in //')
         
-        # We chose to abort when there is a real conflict.
-        if [[ $CHOICE == "3" ]]; then break; fi
-        
         # Do the merge with the conflict.
         git merge "origin/$branch" --no-edit > /dev/null 2>&1
 
@@ -208,7 +205,6 @@ for branch in "${SATELLITES[@]}"; do
             esac
         fi
     fi
-    echo -e "${GREEN}$branch has been commited into main-temp${NC}"
 done
 
 # Check if we wish to abort
@@ -216,11 +212,28 @@ echo -e "---------------------------------"
 
 if [[ $ABORT == 1 ]]; then
     echo -e "${YELLOW}You have chosen Merge Strategy 3 - Abort${NC}"
-    echo -ne "${MAGENTA}There are real conflicts. Press Enter to exit Main Sync...${NC}"
-    read -rsn1; echo "";
-    echo -e "${YELLOW}There are real conflicts. Exiting Main Sync...${NC}"
-    finishing-merge
-    exit 1
+    echo -e "${YELLOW}Aborting Main Sync...${NC}"
+
+    # You have seen how the merge goes with main-temp
+    # This prompt is to continue with the Sync and merge main-temp into main
+    # This essentially make the Sync with Choice 2, auto0merge
+    PROMPT="N"
+    read -p "Do you wish to do an Auto-Merge (2) and cancel the Abort? (y/N)" PROMPT
+
+    if [[ $PROMPT == "y" ]]; then 
+        # Cancel Abort
+        echo -e "---------------------------------"
+        echo -e "${YELLOW}You have chosen to cancel the Abort${NC}"
+        echo -e "${YELLOW}Main Sync will continue as Auto-Merge (2)${NC}"
+    else
+        # Abort
+        finishing-merge
+        echo -ne "${MAGENTA}=== Press any key to finish. ===${NC}"
+        # -r:raw | -s:silent, hide user input | -p: prompt | -n1:stop after 1 character
+        read -rsn1; echo "";
+        exit 1
+    fi
+
 fi
 
 # 5. Merge main-temp into Main
@@ -228,7 +241,7 @@ echo -e "${BLUE}Switching to main...${NC}"
 git switch main
 echo -e "${BLUE}Merging main-temp into main...${NC}"
 git merge main-temp -m "Main Sync Complete"
-echo -e "${BLUE}MERGE COMPLETE - main-temp has been merged into main.${NC}"
+echo -e "${GREEN}MERGE COMPLETE - main-temp has been merged into main.${NC}"
 
 # 6. Push New main
 echo -e "---------------------------------"
