@@ -209,3 +209,4 @@ git switch $DEVICE_BRANCH
 git merge main -m "Merge main into $DEVICE_BRANCH after a successful Main Sync."
 
 echo -e "${GREEN}Main Sync Complete.${NC}"
+read -rsp "${MAGENTA}Press any key to finish.${NC}" -n1; echo "";
