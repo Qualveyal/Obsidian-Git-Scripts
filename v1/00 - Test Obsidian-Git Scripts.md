@@ -61,3 +61,13 @@ git push --all
 git switch sat-1; git merge origin/sat-1; git switch sat-2;
 git switch sat-2; git merge origin/sat-2; git switch sat-1;
 ```
+
+- **Run Sync scripts**
+```shell
+SCRIPT_LOCATION="/home/qual/Code/Obsidian-Git-Scripts/v1"
+
+# Main.sh
+echo "${SCRIPT_LOCATION}/Main.sh"
+bash "${SCRIPT_LOCATION}/Satellite.sh"
+
+```
