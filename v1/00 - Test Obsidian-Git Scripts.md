@@ -22,6 +22,9 @@ git switch -c sat-2; git push origin sat-2;
 
 # On other devices
 git clone https://github.com/Qualveyal/Vault-Test-Git.git
+
+git switch -c sat-1; git pull sat-1;
+git switch -c sat-2; git pull sat-2;
 ```
 
 - **Helpers**
