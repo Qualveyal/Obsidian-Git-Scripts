@@ -20,6 +20,8 @@ git push -u origin main
 git switch -c sat-1; git push origin sat-1;
 git switch -c sat-2; git push origin sat-2;
 
+# On other devices
+git clone https://github.com/Qualveyal/Vault-Test-Git.git
 ```
 
 - **Helpers**
