@@ -101,5 +101,6 @@ echo -e "${BLUE}Pushing final state to $DEVICE_BRANCH...${NC}"
 git push origin "$DEVICE_BRANCH"
 
 echo -e "${GREEN}Satellite Sync Complete.${NC}"
-read -p "Press any key to finish"
+# -r:raw | -s:silent, hide user input | -p: prompt | -n1:stop after 1 character
+read -rsp "${MAGENTA}Press any key to finish.${NC}" -n1; echo "";
 
