@@ -13,7 +13,7 @@ get_branch_name () {
 }
 DEVICE_BRANCH="$(get_branch_name)"
 VAULT_PATH="/home/qual/Code/Vault-Test-Git"
-LOG="LOG - ${DEVICE_BRANCH}.md"
+LOG_FILE="LOG - ${DEVICE_BRANCH}.md"
 
 # Colors
 BLACK='\033[0;30m'
@@ -73,7 +73,15 @@ elif [[ $CONFLICT_DETECTED == 1 ]]; then
     # 5.2 Doing the merge of Main into local Satellite with conflict
     # main branch's version overwrites the conflicts
     echo -e "${RED}CONFLICT DETECTED - Main overwrites $DEVICE_BRANCH.${NC}"
-    CONFLICT_FILES=$(echo "$MERGE_OUTPUT" | grep "^CONFLICT" | sed 's/CONFLICT.*in //' | sed 's/.*/- [[&]]/')
+
+    # Get the names of the conflict files
+    # Make a list, empty string give a zero element list
+    CONFLICT_FILES=$(echo "$MERGE_OUTPUT" | grep "^CONFLICT" | sed 's/CONFLICT.*in //')
+    if [[ -z "$CONFLICT_FILES" ]]; then
+        CONFLICT_LIST=()
+    else
+        mapfile -t CONFLICT_LIST <<< "$CONFLICT_FILES"
+    fi
 
     git merge origin/main -X theirs -m "Sync from Main - conflict logged"
     echo -e "${GREEN}MERGE COMPLETE - Merge main into local $DEVICE_BRANCH branch.${NC}"
@@ -82,17 +90,30 @@ elif [[ $CONFLICT_DETECTED == 1 ]]; then
     COMMIT_HASH=$(git rev-parse HEAD)
 
     # 5.2.1 Write to the log file.
+    ##########
+    # Write to the log file
     echo "# $(date "+%Y-%m-%d")" >> "$LOG_FILE"
-    echo "Merge: **main** → **$DEVICE_BRANCH**" >> "$LOG_FILE"
+    echo "Merge: **main** → $DEVICE_BRANCH" >> "$LOG_FILE"
     echo "Conflict Resolution: **main** overwrote **$DEVICE_BRANCH**" >> "$LOG_FILE"
-    echo "**$DEVICE_BRANCH** Commit Hash: `$COMMIT_HASH`" >> "$LOG_FILE"
-    echo "$CONFLICT_FILES" >> "$LOG_FILE"
+    echo "**main** Commit Hash: \`$COMMIT_HASH\`" >> "$LOG_FILE"
+
+    # Loop through the list of conflicted files and make a formatted string
+    # for this use case.
+    for file in "${CONFLICT_LIST[@]}"; do
+        LOGGED_FILES="- $file"
+    done
+    echo "$LOGGED_FILES" >> "$LOG_FILE"
+
+    echo "" >> "$LOG_FILE"
     echo "---" >> "$LOG_FILE"
+    ##########
+
 
     # 5.2.2 Commit the log file
     echo -e "${BLUE}Comitting log to $DEVICE_BRANCH...${NC}"
     git add "$LOG_FILE"
     git commit -m "$DEVICE_BRANCH: Updated Log with conflict overwrites."
+    echo -e "${GREEN}LOG COMMIT COMPLETE - Logs for $branch has been committed into main-temp${NC}"
 else
     echo -e "${RED}ERROR - Merge failed unexpectedly.${NC}"
     exit 1

@@ -202,7 +202,7 @@ for branch in "${SATELLITES[@]}"; do
                 echo "**main** Commit Hash: \`$COMMIT_HASH\`" >> "$LOG_FILE"
 
                 # Loop through the list of conflicted files and make a formatted string
-                # for this use casw.
+                # for this use case.
                 for file in "${CONFLICT_LIST[@]}"; do
                     LOGGED_FILES="- $file"
                 done
