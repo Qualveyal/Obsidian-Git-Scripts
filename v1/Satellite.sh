@@ -85,7 +85,7 @@ elif [[ $CONFLICT_DETECTED == 1 ]]; then
     echo "# $(date "+%Y-%m-%d")" >> "$LOG_FILE"
     echo "Merge: **main** → **$DEVICE_BRANCH**" >> "$LOG_FILE"
     echo "Conflict Resolution: **main** overwrote **$DEVICE_BRANCH**" >> "$LOG_FILE"
-    echo "**$DEVICE_BRANCH** Commit Hash: $COMMIT_HASH" >> "$LOG_FILE"
+    echo "**$DEVICE_BRANCH** Commit Hash: `$COMMIT_HASH`" >> "$LOG_FILE"
     echo "$CONFLICT_FILES" >> "$LOG_FILE"
     echo "---" >> "$LOG_FILE"
 

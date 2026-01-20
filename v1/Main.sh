@@ -15,12 +15,12 @@ DEVICE_BRANCH="$(get_branch_name)"
 VAULT_PATH="/home/qual/Code/Vault-Test-Git"
 # Specific files to auto-resolve in favor of main (Space separated).
 # IGNORE_FILES=(".obsidian/workspace.json" "B.md" "C.md")
-IGNORE_FILES=(".obsidian/workspace.json")
+IGNORE_FILES=(".obsidian/workspace.json" "TEST.md")
 LOG_FILE="LOG - Main.md"
 
 # The "switch back to Device Satellite" function.
 finishing-merge () {
-    git switch -C main-temp main
+    git reset --hard
     git switch $DEVICE_BRANCH
     git branch -D main-temp
 }
@@ -127,12 +127,13 @@ for branch in "${SATELLITES[@]}"; do
 
         # Check if any Real Conflicts remain
         CONFLICT_FILES=$(git diff --name-only --diff-filter=U)
-        echo -e "---------------------------------"
-        echo "$CONFLICT_FILES"
-        echo -e "---------------------------------"
+        mapfile -t CONFLICT_LIST <<< "$CONFLICT_FILES"
+        # echo -e "---------------------------------"
+        # echo "$CONFLICT_FILES"
+        # echo -e "---------------------------------"
 
 
-        if [[ -z "$CONFLICTS" ]]; then
+        if [[ ${#CONFLICT_LIST[@]} == 0 ]]; then # List empty
             # We fixed everything, commit and move on
             # Check if there was any conflict with the Ignored Files
             if [[ RESOLVED_SOMETHING == 1 ]]; then 
@@ -145,7 +146,7 @@ for branch in "${SATELLITES[@]}"; do
             git commit -m "${MSG}" > /dev/null
             echo -e "${GREEN}MERGE COMPLETE - Merged $branch without any real conflicts.${NC}"
 
-        elif [ -n "$CONFLICTS" ]; then
+        elif [[ ${#CONFLICT_LIST[@]} > 0 ]]; then # List not empty
             echo -e "${RED}There are real conflicts when merging $branch into main-temp${NC}"
             
             # Decide what to do based on the CHOICE
@@ -156,11 +157,12 @@ for branch in "${SATELLITES[@]}"; do
                 echo -e "${YELLOW}Manually resolve all conflicts.${NC}"
                 echo -e "${YELLOW}Use \"git add\" and \"git commit\" before returning here.${NC}"
                 echo -e "${YELLOW}==========${NC}"
-                echo -e "${CONFLICTS}"
+                echo -e "${CONFLICT_LIST}"
                 echo -e "${YELLOW}==========${NC}"
                 code $VAULT_PATH
 
-                echo -ne "${MAGENTA}Press Enter to continue after manual commit...${NC}"
+                echo -e "${MAGENTA}Press Enter to continue after manual commit...${NC}"
+                echo -ne "${MAGENTA}If you do not commit, then the Sync will be Aborted.${NC}"
                 read -rsn1; echo "";
 
                 if [[ -n $(git status -s) ]]; then
@@ -176,7 +178,7 @@ for branch in "${SATELLITES[@]}"; do
                 echo -e "${YELLOW}You have chosen Merge Strategy 2 or 3${NC}"
                 echo -e "${YELLOW}Auto-resolving conflict by keeping main-temp version...${NC}"
                 
-                for file in "{$IGNORE_FILES[@]}"; do
+                for file in "${CONFLICT_LIST[@]}"; do
                     git restore --source=main-temp --staged --worktree "$file"
                 done
                 git commit -m "Merged $branch (Auto-resolved conflicts, using main version)"
@@ -189,7 +191,7 @@ for branch in "${SATELLITES[@]}"; do
                 echo "# $(date "+%Y-%m-%d")" >> "$LOG_FILE"
                 echo "Merge: $branch → **main**" >> "$LOG_FILE"
                 echo "Conflict Resolution: **main** overruled **$branch**" >> "$LOG_FILE"
-                echo "**main** Commit Hash: $COMMIT_HASH" >> "$LOG_FILE"
+                echo "**main** Commit Hash: `$COMMIT_HASH`" >> "$LOG_FILE"
                 echo "$CONFLICT_FILES" >> "$LOG_FILE"
                 echo "---" >> "$LOG_FILE"
 
