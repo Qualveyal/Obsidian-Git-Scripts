@@ -67,7 +67,7 @@ git switch sat-2; git merge origin/sat-2; git switch sat-1;
 SCRIPT_LOCATION="/home/qual/Code/Obsidian-Git-Scripts/v1"
 
 # Main.sh
-echo "${SCRIPT_LOCATION}/Main.sh"
+bash "${SCRIPT_LOCATION}/Main.sh"
 bash "${SCRIPT_LOCATION}/Satellite.sh"
 
 ```
