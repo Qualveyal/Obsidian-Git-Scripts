@@ -165,7 +165,7 @@ for branch in "${SATELLITES[@]}"; do
                 echo -e "${YELLOW}==========${NC}"
                 echo -e "${CONFLICT_LIST}"
                 echo -e "${YELLOW}==========${NC}"
-                code $VAULT_PATH
+                code "$VAULT_PATH"
 
                 echo -e "${MAGENTA}Press Enter to continue after manual commit...${NC}"
                 echo -ne "${MAGENTA}If you do not commit, then the Sync will be Aborted.${NC}"
