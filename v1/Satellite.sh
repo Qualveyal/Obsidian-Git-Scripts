@@ -1,14 +1,14 @@
 #!/bin/bash
 
 # Configurations
-SATELLITES=("sat-1" "sat-2")
+SATELLITES=("sat-1" "sat-2" "sat-3")
 get_branch_name () {
     if [[ $(uname -n) == "Snow-White"* ]]; then
         echo "${SATELLITES[0]}"
     elif [[ $(uname -n) == "Astral-Canvas"* ]]; then
         echo "${SATELLITES[1]}"
     else
-        echo "E"
+        echo "${SATELLITES[2]}"
     fi
 }
 DEVICE_BRANCH="$(get_branch_name)"
