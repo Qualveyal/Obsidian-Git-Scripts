@@ -43,6 +43,9 @@ cd "$VAULT_PATH" || { echo -e "${RED}Vault path not found.${NC}"; exit 1; }
 # 1 Ensure clean slate
 if [[ -n $(git status -s) ]]; then
     echo -e "${RED}ERROR - Uncommitted changes. Run Satellite sync first.${NC}"
+    echo -ne "${MAGENTA}=== Press any key to finish. ===${NC}"
+    # -r:raw | -s:silent, hide user input | -p: prompt | -n1:stop after 1 character
+    read -rsn1; echo "";
     exit 1
 fi
 
